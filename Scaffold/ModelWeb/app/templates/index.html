@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+<div class="d-flex flex-column align-items-center justify-content-center" style="height: 90vh;">
+    <div class="text-center">
+        <h1 class="display-1">Hi, {{ current_user.username }}!</h1>
+        <p class="lead m-1">Welcome to our Model that predicts Food Affordability</p>
+        <p class="lead m-1">Your country having problems with food security??</p>
+        <p class="lead m-1">Look no further and predict food affordability with our model</p>
+        <a href="/predict" class="btn btn-light fs-4 px-4 py-2 m-2">PREDICT</a>
+    </div>  
+</div>
+
+{% endblock %}

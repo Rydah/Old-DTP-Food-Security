@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+    
+<div class="d-flex align-items-center justify-content-center">
+    <h2 class="mt-3 border rounded-3 py-2 px-3">It's Simulation time</h1>
+</div>
+<div class="container my-5 mt-3">
+    <div class="row">
+        <div class="col-lg-6 bg-secondary rounded-4 mx-3">
+            <div class="d-flex flex-column justify-content-center p-4">
+                <button class="btn btn-success rounded p-2 fs-3 border" id="randomButton">Random</button>
+                <div class="d-flex flex-column justify-content-center my-3">
+                    <!-- slider to loop through of features, min and max to be dynamically changed as well -->
+                    <label for="Export" class="form-label fs-4">Export: <span id="ExportValue"></span></label>
+                    <input type="range" id="Export" min="0" max="100000" class="form-label">
+                    <label for="Import" class="form-label fs-4">Import: <span id="ImportValue"></span></label>
+                    <input type="range" id="Import" min="0" max="100000" class="form-label">
+                </div>
+                <!-- region drop down HTML -->
+                <div class="mb-4">
+                    <label for="Region" class="form-label">Region:</label>
+                    <select class="form-select" id="Region">
+                        <option value="Americas">Americas</option>
+                        <option value="Asia">Asia</option>
+                        <option value="Africa">Africa</option>
+                        <option value="Europe">Europe</option>
+                        <option value="Oceania">Oceania</option>
+                    </select>
+                </div>
+                <button class="btn btn-danger rounded p-3 fs-3" id="calculateButton">Calculate</button>
+            </div>  
+        </div>
+        <!-- Predictor HTML -->
+        <div class="col-lg-5 bg-secondary rounded-4 mx-auto d-flex flex-column align-items-center justify-content-center">
+            <div class="text-center">
+                <div class="rounded-3 bg-light">
+                    <h1 class="mb-1 text-dark">Prediction:</h1>
+                    <div class="fs-1 mb-3" id="predictionValue"></div>
+                </div>
+                <p>The Index given is a range from 0 to 100, 0 represents citizens are unable to afford food at all while 100 represents all citizens are able to afford with ease</p>
+                <p>Eg. Australia has the highest index of 93.3, Nigeria has the lowest index of 25.0, and Sri Lanka has a median index of 61.0</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // getting the sliders DOM elements
+    const ExportInput = document.getElementById('Export');
+    const ExportValue = document.getElementById('ExportValue');
+    const ImportInput = document.getElementById('Import');
+    const ImportValue = document.getElementById('ImportValue');
+    // get dropdown button
+    const Region = document.getElementById('Region')
+    // get value selected of drop down
+    const RegionValue = Region.options[Region.selectedIndex].value
+    // predictor Value
+    let predictionValue = document.getElementById("predictionValue");
+
+    // Changing DOM string value base on slider input
+    ExportInput.addEventListener('input', function() {
+        ExportValue.textContent = this.value;
+    });
+    ImportInput.addEventListener('input', function() {
+        ImportValue.textContent = this.value;
+    });
+
+    // Random Button
+    document.getElementById("randomButton").addEventListener("click", function () {
+        // Function to generate a random value between min and max
+        function getRandomValue(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+        
+        //call getRandomValue for each feature and change Input and Value accordingly
+        const randomExportValue = getRandomValue(parseFloat(ExportInput.min),parseFloat(ExportInput.max))
+        ExportValue.textContent = randomExportValue
+        ExportInput.value = randomExportValue
+        const randomImportValue = getRandomValue(parseFloat(ImportInput.min),parseFloat(ImportInput.max))
+        ImportValue.textContent = randomImportValue
+        ImportInput.value = randomImportValue
+    });
+
+    // Calculate Button
+    document.getElementById("calculateButton").addEventListener("click", function () {
+        // Function to generate a random value between min and max
+        let exportNumericValue = parseFloat(ExportValue.textContent)
+        let importNumericValue = parseFloat(ImportValue.textContent)
+
+        // random function for predictor value for now. This should call our model to predict a value
+        let newValue = (exportNumericValue / 2000) + (importNumericValue / 2000)
+        // change value to 4dp
+        newValue = newValue.toFixed(2)
+        predictionValue.textContent = newValue
+
+        // change color of newValue
+        if (newValue < 40) {
+        predictionValue.classList.remove("text-warning", "text-success");
+        predictionValue.classList.add("text-danger");
+        } else if (newValue >= 40 && newValue <= 70) {
+        predictionValue.classList.remove("text-danger", "text-success");
+        predictionValue.classList.add("text-warning");
+        } else {
+        predictionValue.classList.remove("text-danger", "text-warning");
+        predictionValue.classList.add("text-success");
+        }
+    });
+</script>
+{% endblock %}
